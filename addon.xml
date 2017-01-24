@@ -8,14 +8,15 @@
   <extension point="xbmc.subtitle.module"
              library="service.py" />
   <extension point="xbmc.addon.metadata">
-    <summary lang="en">Untertitel von board.tv4user.de fuer Serien in Deutsch und Englisch</summary>
-    <description lang="en">Subtitle in German/English for Serien from board.tv4user.de </description>
+    <summary lang="en">Subcentral</summary>
+    <description lang="en">German Subtitles from subcentral Webpage for TV Series</description>
+    <description lang="de">Untertitel aus dem Forum Subcentral für TV Serien</description>
     <disclaimer lang="en"></disclaimer>
     <platform>all</platform>
     <license>GNU GENERAL PUBLIC LICENSE. Version 2, June 1991</license>
-    <forum>http://www.kodinerds.net/index.php/Thread/47097-RELEASE-Untertitel-Plugin-f%C3%BCr-http-board-tv4user-de</forum>
-    <website>http://www.br.de</website>
+    <forum>www.kodinerds.net/index.php/Thread/24416-RELEASE-SubCentral-de-Hochwertige-Untertitel-für-TV-Serien</forum>
+    <website>https://www.subcentral.de/</website>
     <email>andreas at vogler dot name</email>
-    <source>https://github.com/kodinerds/repo/tree/master/addons/service.subtitles.tv4user</source>
+    <source>https://github.com/kodinerds/repo/tree/master/service.subtitles.subcentral</source>
   </extension>
 </addon>
