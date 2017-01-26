@@ -131,12 +131,16 @@ def selectTvShow(options):
         tvShowNames.append(option.string)
     dialog = xbmcgui.Dialog()
     selectedTvShowId = dialog.select("subcentral.de - select tvshow", tvShowNames)
+    if selectedTvShowId == -1:
+        sys.exit()
     return tvShowIds[selectedTvShowId]
 
 
 def selectCharacter(characters, subItems):
     dialog = xbmcgui.Dialog()
     selectedId = dialog.select("subcentral.de - select character", characters)
+    if selectedId == -1:
+        sys.exit()
     return subItems[selectedId].find_all("option")
 
 
@@ -226,12 +230,16 @@ def selectSeason(topics):
         seasonsLinks.append(topic.a['href'])
     dialog = xbmcgui.Dialog()
     selectedSeasonId = dialog.select("subcentral.de", seasonNames)
+    if selectedSeasonId == -1:
+        sys.exit()
     return seasonsLinks[selectedSeasonId]
 
 
 def getTvShowSeasonAndEpisodeFromVideoPlayer():
     global video
-    match = re.compile('(.+?)- s(.+?)e(.+?)', re.DOTALL).findall(xbmc.getInfoLabel('VideoPlayer.Title').lower())
+    videoPlayer = xbmc.getInfoLabel('VideoPlayer.Title').lower()
+    debug("VideoPlayer: "+videoPlayer)
+    match = re.compile('(.+?)- s(.+?)e(.+?)', re.DOTALL).findall(videoPlayer)
     if len(match) > 0:
         if video['episode'] == "":
             video['episode'] = match[0][2].strip()
