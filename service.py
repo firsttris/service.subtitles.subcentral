@@ -169,12 +169,12 @@ def getSerien():
 def addLink(name, url, lang):
     url = sys.argv[0] + "?url=" + urllib.quote_plus(url) + "&mode=download"
     if lang == "de":
-        lang = translation(30110)
         icon = "de"
+        lang = translation(30110)
     else:
         icon = "en"
         lang = translation(30111)
-    xbmcListItem = xbmcgui.ListItem(label2=name, thumbnailImage=icon, label=lang)
+    xbmcListItem = xbmcgui.ListItem(label=lang, label2=name, thumbnailImage=icon, iconImage=str(5))
     xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=url, listitem=xbmcListItem)
 
 
@@ -282,7 +282,7 @@ def getTvShowSeasonAndEpisodeFromFile():
         if video['tvshow'] == "":
             video['tvshow'] = matchFile[0][0].strip()
         if video['season'] == "":
-            video['episode'] = matchFile[0][1].strip()
+            video['season'] = matchFile[0][1].strip()
         if video['episode'] == "":
             video['episode'] = matchFile[0][2].strip()
 
@@ -295,8 +295,6 @@ def getFile():
         currentFile = currentFile.replace("\\", "/").split("/")
         dirName = currentFile[-2].lower()
         fileName = currentFile[-1].lower()
-        debug("Dirname: " + dirname)
-        debug("Filename: " + filename)
     except:
         pass
     return dirName, fileName
