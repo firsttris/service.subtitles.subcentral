@@ -222,7 +222,7 @@ def selectSeason(topics):
     seasonNames = []
     seasonsLinks = []
     for index, topic in enumerate(topics):
-        playingSeasonId = checkCurrentlyPlayingSeason(index, topic, playingSeasonId)
+        playingSeasonId = checkCurrentlyPlayingSeason(index, topic)
         names = topic.a.string.split('Staffel')
         if len(names) == 1:
             seasonNames.append(names[0])
@@ -336,7 +336,8 @@ def selectSubTitleFile():
         subTitleFile = subtitleFileList[fileId]
         xbmcListItem = xbmcgui.ListItem(label=subTitleFile)
     else:
-        xbmcListItem = xbmcgui.ListItem(label=subtitleFileList[0])
+        subTitleFile = subtitleFileList[0]
+        xbmcListItem = xbmcgui.ListItem(label=subTitleFile)
     xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=subTitleFile, listitem=xbmcListItem, isFolder=False)
     xbmcplugin.endOfDirectory(addon_handle)
 
