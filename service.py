@@ -206,7 +206,7 @@ def getEpisodes(url):
                 match = re.compile('flags\/(.*?)\.', re.DOTALL).findall(imgSrc)
                 language = match[0]
                 addLink(name=episodeTitle + " " + author + " " + release, url=subLink, lang=language)
-
+    xbmcplugin.endOfDirectory(addon_handle)
 
 def getSeasons(seasonId):
     tvShowUrl = mainUrl + "/index.php?page=Board&boardID=" + seasonId
@@ -221,18 +221,29 @@ def getSeasons(seasonId):
 def selectSeason(topics):
     seasonNames = []
     seasonsLinks = []
-    for topic in topics:
+    for index, topic in enumerate(topics):
+        playingSeasonId = checkCurrentlyPlayingSeason(index, topic, playingSeasonId)
         names = topic.a.string.split('Staffel')
         if len(names) == 1:
             seasonNames.append(names[0])
         else:
             seasonNames.append('Staffel ' + names[1])
         seasonsLinks.append(topic.a['href'])
+    if playingSeasonId != "":
+        return seasonsLinks[playingSeasonId]
     dialog = xbmcgui.Dialog()
     selectedSeasonId = dialog.select("subcentral.de", seasonNames)
     if selectedSeasonId == -1:
         sys.exit()
     return seasonsLinks[selectedSeasonId]
+
+
+def checkCurrentlyPlayingSeason(index, topic):
+    playingSeasonId = ""
+    match = re.compile('.*Staffel (\d).*', re.DOTALL).findall(topic.a.string)
+    if video['season'] != "" and len(match) > 0 and video['season'] == match[0]:
+        playingSeasonId = index
+    return playingSeasonId
 
 
 def getTvShowSeasonAndEpisodeFromVideoPlayer():
