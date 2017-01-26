@@ -322,6 +322,10 @@ def downloadSubtitle():
     fileLocation = subtitleDownloadDirectory + filename
     showInfoNotification(filename)
     xbmc.executebuiltin("XBMC.Extract(" + fileLocation + ", " + extractSubtitleDirectory + ")", True)
+    selectSubTitleFile()
+
+
+def selectSubTitleFile():
     subtitleFileList = []
     for file in xbmcvfs.listdir(extractSubtitleDirectory)[1]:
         file = os.path.join(extractSubtitleDirectory, file)
@@ -332,8 +336,7 @@ def downloadSubtitle():
         subTitleFile = subtitleFileList[fileId]
         xbmcListItem = xbmcgui.ListItem(label=subTitleFile)
     else:
-        for subTitleFile in subtitleFileList:
-            xbmcListItem = xbmcgui.ListItem(label=subTitleFile)
+        xbmcListItem = xbmcgui.ListItem(label=subtitleFileList[0])
     xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=subTitleFile, listitem=xbmcListItem, isFolder=False)
     xbmcplugin.endOfDirectory(addon_handle)
 
