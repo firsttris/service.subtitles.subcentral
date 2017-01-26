@@ -99,20 +99,28 @@ def getUrl(url):
 def search():
     getTvShowSeasonAndEpisodeFromFile()
     getTvShowSeasonAndEpisodeFromVideoPlayer()
-    characters, subItems = getSerien()
-    options = []
-    if video['tvshow'] != "":
-        searchString = cleanTitle(video['tvshow'].lower())
-        options = subItems.find_all('option', text=re.compile(searchString))
-    if len(options) == 1:
-        getSeasons(options['value'])
-    if len(options) == 0:
+    characters, subItems, select = getSerien()
+    if video['tvshow'] == "":
         options = selectCharacter(characters, subItems)
         selectedTvShowId = selectTvShow(options)
         getSeasons(selectedTvShowId)
-    if len(options) > 1:
-        selectedTvShowId = selectTvShow(options)
-        getSeasons(selectedTvShowId)
+    else:
+        options = findTvShowByTitle(select)
+        if len(options) < 1:
+            options = selectCharacter(characters, subItems)
+            selectedTvShowId = selectTvShow(options)
+            getSeasons(selectedTvShowId)
+        if len(options) == 1:
+            getSeasons(options[0]['value'])
+        if len(options) > 1:
+            selectedTvShowId = selectTvShow(options)
+            getSeasons(selectedTvShowId)
+
+
+def findTvShowByTitle(select):
+    searchString = cleanTitle(video['tvshow'].lower())
+    debug("SearchString: "+searchString)
+    return select.find_all('option', text=re.compile("(?i)"+searchString))
 
 
 def selectTvShow(options):
@@ -134,8 +142,11 @@ def selectCharacter(characters, subItems):
 
 def cleanTitle(title):
     title = title.lower().replace('the ', '')
+    title = title.lower().replace(', ', ' ')
+    title = title.lower().replace('- ', ' ')
+    title = title.lower().replace(': ', ' ')
     title = title.strip()
-    return title
+    return title[0:5]
 
 
 def getSerien():
@@ -148,7 +159,7 @@ def getSerien():
     for character in optgroups:
         subItems.append(character)
         characters.append(character['label'])
-    return characters, subItems
+    return characters, subItems, select
 
 
 def addLink(name, url, lang):
@@ -172,12 +183,12 @@ def getEpisodes(url):
         quoteBody = htmlPage.find_all("div", class_="quoteBody")
         divs = quoteBody[0].find_all('table')
     for div in divs:
-        isInaktiv = div.find_all("tr", class_="inaktiv")
-        if isInaktiv:
-            continue
         trs = div.find_all('tr')
         imgs = trs[0].find_all('img')
         for tr in trs:
+            if tr.has_attr("class"):
+                if tr['class'] == 'inaktiv':
+                    continue
             subLinks = tr.find_all('a')
             titles = tr.find_all("td", class_="release")
             if titles is None or len(titles) < 1:
@@ -208,7 +219,10 @@ def selectSeason(topics):
     seasonsLinks = []
     for topic in topics:
         names = topic.a.string.split('Staffel')
-        seasonNames.append('Staffel ' + names[1])
+        if len(names) == 1:
+            seasonNames.append(names[0])
+        else:
+            seasonNames.append('Staffel ' + names[1])
         seasonsLinks.append(topic.a['href'])
     dialog = xbmcgui.Dialog()
     selectedSeasonId = dialog.select("subcentral.de", seasonNames)
